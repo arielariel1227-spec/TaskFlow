@@ -1,53 +1,45 @@
-// tasks.js
-// Ce fichier définit les routes (les “actions possibles”) liées aux tâches :
-// récupérer, créer, modifier et supprimer une tâche.
-
-const express = require(‘express’);
+const express = require('express');
 const router = express.Router();
-const taskModel = require(’../models/taskModel’);
+const taskModel = require('../models/taskModel');
 
-// GET /api/tasks → récupérer toutes les tâches
-router.get(’/’, (req, res) => {
-const tasks = taskModel.getAllTasks();
-res.json(tasks);
+router.get('/', (req, res) => {
+  const tasks = taskModel.getAllTasks();
+  res.json(tasks);
 });
 
-// POST /api/tasks → créer une nouvelle tâche
-router.post(’/’, (req, res) => {
-const { title } = req.body;
+router.post('/', (req, res) => {
+  const title = req.body.title;
 
-if (!title || title.trim() === ‘’) {
-return res.status(400).json({ error: ‘Le titre de la tâche est requis’ });
-}
+  if (!title || title.trim() === '') {
+    return res.status(400).json({ error: 'Le titre de la tache est requis' });
+  }
 
-const newTask = taskModel.createTask(title);
-res.status(201).json(newTask);
+  const newTask = taskModel.createTask(title);
+  res.status(201).json(newTask);
 });
 
-// PUT /api/tasks/:id → modifier une tâche (titre ou statut)
-router.put(’/:id’, (req, res) => {
-const { id } = req.params;
-const updates = req.body;
+router.put('/:id', (req, res) => {
+  const id = req.params.id;
+  const updates = req.body;
 
-const updatedTask = taskModel.updateTask(id, updates);
+  const updatedTask = taskModel.updateTask(id, updates);
 
-if (!updatedTask) {
-return res.status(404).json({ error: ‘Tâche introuvable’ });
-}
+  if (!updatedTask) {
+    return res.status(404).json({ error: 'Tache introuvable' });
+  }
 
-res.json(updatedTask);
+  res.json(updatedTask);
 });
 
-// DELETE /api/tasks/:id → supprimer une tâche
-router.delete(’/:id’, (req, res) => {
-const { id } = req.params;
-const success = taskModel.deleteTask(id);
+router.delete('/:id', (req, res) => {
+  const id = req.params.id;
+  const success = taskModel.deleteTask(id);
 
-if (!success) {
-return res.status(404).json({ error: ‘Tâche introuvable’ });
-}
+  if (!success) {
+    return res.status(404).json({ error: 'Tache introuvable' });
+  }
 
-res.status(204).send();
+  res.status(204).send();
 });
 
 module.exports = router;
